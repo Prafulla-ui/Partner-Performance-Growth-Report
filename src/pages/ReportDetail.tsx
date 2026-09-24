@@ -1,6 +1,6 @@
 import { ArrowLeft, Download, Pencil, Share2 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import { DemoDataBadge, InternalOnlyBadge } from '../components/ui/Badges'
 import { PrimaryButton, SecondaryButton } from '../components/ui/Buttons'
 import { ComparisonSelector } from '../components/ui/ComparisonSelector'
@@ -10,6 +10,7 @@ import { EmptyState } from '../components/ui/EmptyState'
 import { ShareReportModal } from '../components/ShareReportModal'
 import { ReportStatusBadge } from '../components/ui/StatusBadge'
 import { SegmentedControl } from '../components/ui/SegmentedControl'
+import { useAuth } from '../context/AuthContext'
 import { useReport } from '../context/ReportContext'
 import { libraryReports } from '../data/grandMeridian'
 import { DemandCoverage } from '../sections/DemandCoverage'
@@ -25,15 +26,19 @@ import type { AccountType, PartnerPerspective, ViewMode, ViewPeriod } from '../t
 
 export function ReportDetail({ publicView = false }: { publicView?: boolean }) {
   const { id } = useParams()
+  const { user, isHotelier, isAccountManager } = useAuth()
   const report = libraryReports.find((r) => r.id === id) ?? libraryReports[0]
   const ctx = useReport()
+  const canOpen =
+    publicView || !user?.allowedReportIds || !id || user.allowedReportIds.includes(id)
+
   const [editOpen, setEditOpen] = useState(false)
   const [downloadOpen, setDownloadOpen] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
 
   useEffect(() => {
-    if (publicView) ctx.setViewMode('customer')
-  }, [publicView, ctx.setViewMode])
+    if (publicView || isHotelier) ctx.setViewMode('customer')
+  }, [publicView, isHotelier, ctx.setViewMode])
 
   const nav = useMemo(() => {
     const items = [
@@ -70,6 +75,10 @@ export function ReportDetail({ publicView = false }: { publicView?: boolean }) {
     return () => observers.forEach((observer) => observer?.disconnect())
   }, [nav])
 
+  if (!canOpen) {
+    return <Navigate to={user?.homeReportId ? `/reports/${user.homeReportId}` : '/'} replace />
+  }
+
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-40 border-b border-line bg-white/90 shadow-[0_8px_24px_rgba(15,31,51,0.06)] backdrop-blur">
@@ -94,20 +103,32 @@ export function ReportDetail({ publicView = false }: { publicView?: boolean }) {
                 <DemoDataBadge />
                 {!publicView && <ReportStatusBadge status={ctx.reportStatus} />}
               </div>
-              <p className="truncate text-xs text-navy-muted">{report.partner}</p>
+              <p className="truncate text-xs text-navy-muted">
+                {report.partner}
+                {isHotelier && user?.scopeLabel ? ` · ${user.scopeLabel}` : ''}
+              </p>
             </div>
           </div>
           {!publicView && (
             <div className="flex shrink-0 items-center gap-3">
-              <SegmentedControl<ViewMode>
-                value={ctx.viewMode}
-                onChange={ctx.setViewMode}
-                options={[
-                  { value: 'internal', label: 'Internal' },
-                  { value: 'customer', label: 'Client preview' },
-                ]}
-              />
-              <div className="h-6 w-px bg-line" />
+              {isAccountManager && (
+                <>
+                  <SegmentedControl<ViewMode>
+                    value={ctx.viewMode}
+                    onChange={ctx.setViewMode}
+                    options={[
+                      { value: 'internal', label: 'Internal' },
+                      { value: 'customer', label: 'Client preview' },
+                    ]}
+                  />
+                  <div className="h-6 w-px bg-line" />
+                </>
+              )}
+              {isHotelier && (
+                <span className="rounded-full bg-teal-soft px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-teal">
+                  Hotelier view
+                </span>
+              )}
               {ctx.isInternal && (
                 <SecondaryButton onClick={() => setEditOpen(true)}>
                   <Pencil size={14} />
@@ -118,10 +139,12 @@ export function ReportDetail({ publicView = false }: { publicView?: boolean }) {
                 <Download size={14} />
                 Download
               </SecondaryButton>
-              <PrimaryButton onClick={() => setShareOpen(true)}>
-                <Share2 size={14} />
-                Share
-              </PrimaryButton>
+              {isAccountManager && (
+                <PrimaryButton onClick={() => setShareOpen(true)}>
+                  <Share2 size={14} />
+                  Share
+                </PrimaryButton>
+              )}
             </div>
           )}
         </div>
@@ -212,13 +235,13 @@ export function ReportDetail({ publicView = false }: { publicView?: boolean }) {
         <div className="bg-teal text-center text-sm font-medium text-white">
           Shared report · View only. Sent by Priya Sharma.
         </div>
-      ) : (
-        !ctx.isInternal && (
-          <div className="bg-teal text-center text-sm font-medium text-white">
-            You are viewing the version that will be shared with the client.
-          </div>
-        )
-      )}
+      ) : !ctx.isInternal ? (
+        <div className="bg-teal text-center text-sm font-medium text-white">
+          {isHotelier
+            ? `Hotelier ${user?.hotelierLevel ?? ''} view · client report only`
+            : 'You are viewing the version that will be shared with the client.'}
+        </div>
+      ) : null}
 
       <main className="mx-auto max-w-[1440px] space-y-12 px-8 py-8">
         {ctx.isInternal && (

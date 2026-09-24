@@ -13,7 +13,7 @@ import type { LibraryReport } from '../types'
 
 export function ReportLibrary() {
   const navigate = useNavigate()
-  const { user, logout } = useAuth()
+  const { user, logout, isHotelier, isAccountManager } = useAuth()
   const [query, setQuery] = useState('')
   const [perspective, setPerspective] = useState('all')
   const [accountType, setAccountType] = useState('all')
@@ -24,15 +24,16 @@ export function ReportLibrary() {
 
   const rows = useMemo(() => {
     return libraryReports.filter((r) => {
+      const allowed = !user?.allowedReportIds || user.allowedReportIds.includes(r.id)
       const q = query.toLowerCase()
       const matchesQuery = !q || r.partner.toLowerCase().includes(q) || r.period.toLowerCase().includes(q)
       const matchesPerspective = perspective === 'all' || r.perspective === perspective
       const matchesType = accountType === 'all' || r.accountType === accountType
       const matchesRegion = region === 'all' || r.region === region
       const matchesStatus = status === 'all' || r.status === status
-      return matchesQuery && matchesPerspective && matchesType && matchesRegion && matchesStatus
+      return allowed && matchesQuery && matchesPerspective && matchesType && matchesRegion && matchesStatus
     })
-  }, [query, perspective, accountType, region, status])
+  }, [query, perspective, accountType, region, status, user])
 
   const columns: Column<LibraryReport>[] = [
     {
@@ -70,30 +71,34 @@ export function ReportLibrary() {
           <SecondaryButton className="h-8 px-2 text-xs" onClick={() => navigate(`/reports/${r.id}`)}>
             View
           </SecondaryButton>
-          <SecondaryButton className="h-8 px-2 text-xs" onClick={() => navigate(`/reports/${r.id}`)}>
-            <Pencil size={12} />
-            Edit
-          </SecondaryButton>
-          <SecondaryButton className="h-8 px-2 text-xs">
-            <Download size={12} />
-            Download
-          </SecondaryButton>
-          <button
-            type="button"
-            className="rounded-md p-1.5 text-navy-muted hover:bg-canvas"
-            onClick={() => setMenuId(menuId === r.id ? null : r.id)}
-          >
-            <MoreHorizontal size={16} />
-          </button>
-          {menuId === r.id && (
-            <div className="absolute right-0 top-9 z-10 w-40 rounded-lg border border-line bg-white py-1 text-sm shadow-lg">
-              <button type="button" className="block w-full px-3 py-1.5 text-left hover:bg-canvas">
-                Duplicate
+          {isAccountManager && (
+            <>
+              <SecondaryButton className="h-8 px-2 text-xs" onClick={() => navigate(`/reports/${r.id}`)}>
+                <Pencil size={12} />
+                Edit
+              </SecondaryButton>
+              <SecondaryButton className="h-8 px-2 text-xs">
+                <Download size={12} />
+                Download
+              </SecondaryButton>
+              <button
+                type="button"
+                className="rounded-md p-1.5 text-navy-muted hover:bg-canvas"
+                onClick={() => setMenuId(menuId === r.id ? null : r.id)}
+              >
+                <MoreHorizontal size={16} />
               </button>
-              <button type="button" className="block w-full px-3 py-1.5 text-left hover:bg-canvas">
-                Archive
-              </button>
-            </div>
+              {menuId === r.id && (
+                <div className="absolute right-0 top-9 z-10 w-40 rounded-lg border border-line bg-white py-1 text-sm shadow-lg">
+                  <button type="button" className="block w-full px-3 py-1.5 text-left hover:bg-canvas">
+                    Duplicate
+                  </button>
+                  <button type="button" className="block w-full px-3 py-1.5 text-left hover:bg-canvas">
+                    Archive
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       ),
@@ -108,7 +113,16 @@ export function ReportLibrary() {
             <div className="flex h-9 items-center rounded-md bg-gradient-to-br from-rg-blue-bright to-rg-blue px-2.5 text-xs font-bold tracking-wide text-white shadow-sm">
               UNIFI
             </div>
-            <h1 className="text-lg font-semibold text-navy">Partner Performance & Growth Reports</h1>
+            <div>
+              <h1 className="text-lg font-semibold text-navy">
+                {isHotelier ? 'Your performance reports' : 'Partner Performance & Growth Reports'}
+              </h1>
+              {isHotelier && user?.scopeLabel && (
+                <p className="text-xs text-navy-muted">
+                  {user.partner} · {user.scopeLabel}
+                </p>
+              )}
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <div className="text-right">
@@ -187,10 +201,12 @@ export function ReportLibrary() {
               />
             </Field>
           </FilterBar>
-          <PrimaryButton onClick={() => setOpen(true)}>
-            <Plus size={16} />
-            Generate Report
-          </PrimaryButton>
+          {isAccountManager && (
+            <PrimaryButton onClick={() => setOpen(true)}>
+              <Plus size={16} />
+              Generate Report
+            </PrimaryButton>
+          )}
         </div>
 
         <div className="relative">

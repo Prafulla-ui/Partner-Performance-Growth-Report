@@ -1,18 +1,35 @@
 import { useState, type FormEvent } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { DEMO_USERS, useAuth } from '../context/AuthContext'
 import { DemoDataBadge } from '../components/ui/Badges'
 import { PrimaryButton } from '../components/ui/Buttons'
+import { SegmentedControl } from '../components/ui/SegmentedControl'
+import type { ScopeLevel, UserKind } from '../types'
 
 export function Login() {
   const { user, login } = useAuth()
   const navigate = useNavigate()
-  const [email, setEmail] = useState('priya.sharma@rategain.com')
-  const [password, setPassword] = useState('Unifi2026')
+  const [kind, setKind] = useState<UserKind>('account_manager')
+  const [level, setLevel] = useState<ScopeLevel>('chain')
+  const [email, setEmail] = useState(DEMO_USERS[0].email)
+  const [password, setPassword] = useState(DEMO_USERS[0].password)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
 
-  if (user) return <Navigate to="/" replace />
+  if (user) {
+    const dest = user.homeReportId ? `/reports/${user.homeReportId}` : '/'
+    return <Navigate to={dest} replace />
+  }
+
+  const applyDemo = (nextKind: UserKind, nextLevel: ScopeLevel) => {
+    const match =
+      nextKind === 'account_manager'
+        ? DEMO_USERS.find((u) => u.kind === 'account_manager')
+        : DEMO_USERS.find((u) => u.kind === 'hotelier' && u.hotelierLevel === nextLevel)
+    if (!match) return
+    setEmail(match.email)
+    setPassword(match.password)
+  }
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault()
@@ -24,7 +41,8 @@ export function Login() {
         setError(message)
         return
       }
-      navigate('/', { replace: true })
+      const matched = DEMO_USERS.find((u) => u.email === email.trim().toLowerCase())
+      navigate(matched?.homeReportId ? `/reports/${matched.homeReportId}` : '/', { replace: true })
     }, 450)
   }
 
@@ -42,8 +60,8 @@ export function Login() {
             Partner Performance & Growth Reports
           </h1>
           <p className="mt-4 max-w-md text-sm leading-6 text-white/75">
-            One business-review workspace for supply and demand partners — direct performance, channel mix,
-            parity and growth recommendations in a single brief.
+            Account managers prepare the internal brief. Hoteliers open the same report in client view — chain, brand or
+            property — without internal notes or cost.
           </p>
         </div>
         <p className="text-xs text-white/45">Demo environment · dummy data only</p>
@@ -57,13 +75,46 @@ export function Login() {
                 UNIFI
               </div>
               <h2 className="text-2xl font-semibold text-navy">Sign in</h2>
-              <p className="mt-1 text-sm text-navy-muted">Account team access for the partner review workspace.</p>
+              <p className="mt-1 text-sm text-navy-muted">
+                {kind === 'account_manager'
+                  ? 'Account team access to prepare and share reviews.'
+                  : 'Hotelier access to the client-facing report only.'}
+              </p>
             </div>
             <DemoDataBadge />
           </div>
 
           <form onSubmit={onSubmit} className="surface-card rounded-2xl p-7">
-            <label className="block text-xs font-semibold text-navy-muted">
+            <p className="mb-3 text-xs font-semibold text-navy-muted">Sign in as</p>
+            <SegmentedControl<UserKind>
+              value={kind}
+              onChange={(next) => {
+                setKind(next)
+                applyDemo(next, level)
+              }}
+              options={[
+                { value: 'account_manager', label: 'Account manager' },
+                { value: 'hotelier', label: 'Hotelier' },
+              ]}
+            />
+            {kind === 'hotelier' && (
+              <div className="mt-3">
+                <p className="mb-2 text-xs font-semibold text-navy-muted">Hotelier level</p>
+                <SegmentedControl<ScopeLevel>
+                  value={level}
+                  onChange={(next) => {
+                    setLevel(next)
+                    applyDemo('hotelier', next)
+                  }}
+                  options={[
+                    { value: 'chain', label: 'Chain' },
+                    { value: 'brand', label: 'Brand' },
+                    { value: 'property', label: 'Property' },
+                  ]}
+                />
+              </div>
+            )}
+            <label className="mt-4 block text-xs font-semibold text-navy-muted">
               Work email
               <input
                 type="email"
@@ -89,10 +140,18 @@ export function Login() {
             </PrimaryButton>
           </form>
 
-          <div className="mt-4 rounded-xl border border-dashed border-line bg-white px-4 py-3 text-xs text-navy-muted">
+          <div className="mt-4 space-y-3 rounded-xl border border-dashed border-line bg-white px-4 py-3 text-xs text-navy-muted">
             <p className="font-semibold text-navy">Demo credentials</p>
-            <p className="mt-1">Email: priya.sharma@rategain.com</p>
-            <p>Password: Unifi2026</p>
+            <div>
+              <p className="font-semibold text-navy">Account manager</p>
+              <p>priya.sharma@rategain.com · Unifi2026</p>
+            </div>
+            <div>
+              <p className="font-semibold text-navy">Hotelier (password Hotelier2026)</p>
+              <p>Chain: ananya.mehta@grandmeridian.com</p>
+              <p>Brand: james.cole@azuresands.com</p>
+              <p>Property: nina.kapoor@grandmeridian.com</p>
+            </div>
           </div>
         </div>
       </main>

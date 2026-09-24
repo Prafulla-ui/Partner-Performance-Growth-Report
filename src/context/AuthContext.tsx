@@ -1,4 +1,5 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
+import type { ScopeLevel, UserKind } from '../types'
 
 const STORAGE_KEY = 'unifi-demo-session'
 
@@ -6,26 +7,84 @@ export interface AuthUser {
   name: string
   email: string
   role: string
+  kind: UserKind
+  hotelierLevel?: ScopeLevel
+  partner?: string
+  scopeLabel?: string
+  allowedReportIds?: string[]
+  homeReportId?: string
 }
 
 interface AuthState {
   user: AuthUser | null
   login: (email: string, password: string) => string | null
   logout: () => void
+  isAccountManager: boolean
+  isHotelier: boolean
 }
 
-const DEMO_USER: AuthUser = {
-  name: 'Priya Sharma',
-  email: 'priya.sharma@rategain.com',
-  role: 'Account manager',
-}
+export const DEMO_USERS: (AuthUser & { password: string })[] = [
+  {
+    name: 'Priya Sharma',
+    email: 'priya.sharma@rategain.com',
+    role: 'Account manager',
+    kind: 'account_manager',
+    password: 'Unifi2026',
+  },
+  {
+    name: 'Ananya Mehta',
+    email: 'ananya.mehta@grandmeridian.com',
+    role: 'Hotelier · Chain',
+    kind: 'hotelier',
+    hotelierLevel: 'chain',
+    partner: 'Grand Meridian Hotels & Resorts',
+    scopeLabel: 'Chain — 12 properties',
+    allowedReportIds: ['grand-meridian-q2-2026'],
+    homeReportId: 'grand-meridian-q2-2026',
+    password: 'Hotelier2026',
+  },
+  {
+    name: 'James Cole',
+    email: 'james.cole@azuresands.com',
+    role: 'Hotelier · Brand',
+    kind: 'hotelier',
+    hotelierLevel: 'brand',
+    partner: 'Azure Sands Collection',
+    scopeLabel: 'Brand — 6 properties',
+    allowedReportIds: ['azure-sands-q2-2026'],
+    homeReportId: 'azure-sands-q2-2026',
+    password: 'Hotelier2026',
+  },
+  {
+    name: 'Nina Kapoor',
+    email: 'nina.kapoor@grandmeridian.com',
+    role: 'Hotelier · Property',
+    kind: 'hotelier',
+    hotelierLevel: 'property',
+    partner: 'Grand Meridian Hotels & Resorts',
+    scopeLabel: 'Property — GM Dubai Marina',
+    allowedReportIds: ['grand-meridian-dubai-q2-2026'],
+    homeReportId: 'grand-meridian-dubai-q2-2026',
+    password: 'Hotelier2026',
+  },
+]
 
 const AuthContext = createContext<AuthState | null>(null)
+
+function toPublicUser(entry: (typeof DEMO_USERS)[number]): AuthUser {
+  const { password: _password, ...user } = entry
+  return user
+}
 
 function readSession(): AuthUser | null {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY)
-    return raw ? (JSON.parse(raw) as AuthUser) : null
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as AuthUser
+    if (!parsed.kind) {
+      return { ...parsed, kind: 'account_manager' }
+    }
+    return parsed
   } catch {
     return null
   }
@@ -36,13 +95,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = (email: string, password: string) => {
     const trimmed = email.trim().toLowerCase()
-    const validEmail = trimmed === DEMO_USER.email
-    const validPassword = password === 'Unifi2026'
-    if (!validEmail || !validPassword) {
-      return 'Use the demo credentials shown below the form.'
+    const match = DEMO_USERS.find((u) => u.email === trimmed && u.password === password)
+    if (!match) {
+      return 'Use one of the demo credentials shown below the form.'
     }
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(DEMO_USER))
-    setUser(DEMO_USER)
+    const next = toPublicUser(match)
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+    setUser(next)
     return null
   }
 
@@ -51,7 +110,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }
 
-  const value = useMemo(() => ({ user, login, logout }), [user])
+  const value = useMemo(
+    () => ({
+      user,
+      login,
+      logout,
+      isAccountManager: user?.kind === 'account_manager',
+      isHotelier: user?.kind === 'hotelier',
+    }),
+    [user],
+  )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

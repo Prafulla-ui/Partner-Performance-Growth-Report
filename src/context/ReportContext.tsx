@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { useAuth } from './AuthContext'
 import {
   demandNarrative,
   demandRecommendations,
@@ -92,9 +93,19 @@ const compareMeta: Record<
 }
 
 export function ReportProvider({ children }: { children: ReactNode }) {
+  const { isHotelier } = useAuth()
   const [perspective, setPerspectiveState] = useState<PartnerPerspective>('supply')
   const [accountType, setAccountType] = useState<AccountType>('full')
-  const [viewMode, setViewMode] = useState<ViewMode>('internal')
+  const [viewMode, setViewModeState] = useState<ViewMode>(isHotelier ? 'customer' : 'internal')
+
+  useEffect(() => {
+    setViewModeState(isHotelier ? 'customer' : 'internal')
+  }, [isHotelier])
+
+  const setViewMode = (v: ViewMode) => {
+    if (isHotelier) return
+    setViewModeState(v)
+  }
   const [viewPeriod, setViewPeriodState] = useState<ViewPeriod>('quarter')
   const [periodLabel, setPeriodLabel] = useState('Q2 2026')
   const [compareWith, setCompareWith] = useState<CompareWith>('both')
@@ -163,7 +174,7 @@ export function ReportProvider({ children }: { children: ReactNode }) {
     updateRecommendation,
     addAction,
     updateAction,
-    isInternal: viewMode === 'internal',
+    isInternal: viewMode === 'internal' && !isHotelier,
     isFullStack: accountType === 'full',
     isSupply,
   }

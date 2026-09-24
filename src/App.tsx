@@ -8,7 +8,7 @@ import { ReportLibrary } from './pages/ReportLibrary'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
       <AuthProvider>
         <ReportProvider>
           <Routes>
