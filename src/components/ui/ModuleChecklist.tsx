@@ -1,5 +1,5 @@
 import { defaultModulesFor, modulesForContext, REQUIRED_MODULES } from '../../data/reportModules'
-import type { AccountType, PartnerPerspective, ReportModuleId } from '../types'
+import type { AccountType, PartnerPerspective, ReportModuleId } from '../../types'
 
 export function ModuleChecklist({
   perspective,

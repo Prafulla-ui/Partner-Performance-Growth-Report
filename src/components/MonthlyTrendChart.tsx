@@ -242,8 +242,11 @@ export function MonthlyTrendChart({
               dataKey="month"
               axisLine={false}
               tickLine={false}
-              tick={({ x, y, payload }: { x: number; y: number; payload: { value: string } }) => {
-                const active = payload.value === (activeMonth ?? data[data.length - 1]?.month)
+              tick={(props) => {
+                const x = Number(props.x ?? 0)
+                const y = Number(props.y ?? 0)
+                const value = String(props.payload?.value ?? '')
+                const active = value === (activeMonth ?? data[data.length - 1]?.month)
                 return (
                   <text
                     x={x}
@@ -253,7 +256,7 @@ export function MonthlyTrendChart({
                     fontSize={12}
                     fontWeight={active ? 700 : 500}
                   >
-                    {payload.value}
+                    {value}
                   </text>
                 )
               }}
