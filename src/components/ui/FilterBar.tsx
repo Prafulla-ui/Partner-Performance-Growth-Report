@@ -26,7 +26,7 @@ export function Select({
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="h-9 rounded-lg border border-line bg-white px-2.5 text-sm text-navy outline-none focus:border-rg-blue"
+      className="h-9 rounded-full border-0 bg-white py-0 pl-3 pr-8 text-sm text-navy outline-none focus-visible:ring-2 focus-visible:ring-rg-blue/30"
     >
       {options.map((opt) => (
         <option key={opt.value} value={opt.value}>
@@ -53,7 +53,7 @@ export function TextInput({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className={`h-9 w-full rounded-lg border border-line bg-white px-3 text-sm text-navy outline-none focus:border-rg-blue ${className}`}
+      className={`h-9 w-full rounded-full border-0 bg-white px-3 text-sm text-navy outline-none focus-visible:ring-2 focus-visible:ring-rg-blue/30 ${className}`}
     />
   )
 }

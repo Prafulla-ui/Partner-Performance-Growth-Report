@@ -11,8 +11,9 @@ export function ComparisonSelector() {
       <select
         value={compareWith}
         onChange={(e) => setCompareWith(e.target.value as CompareWith)}
-        className="h-8 rounded-lg border border-line bg-white px-2.5 text-xs font-medium text-navy outline-none focus:border-rg-blue"
+        className="h-9 rounded-full border-0 bg-white py-0 pl-3 pr-8 text-xs font-medium text-navy outline-none focus-visible:ring-2 focus-visible:ring-rg-blue/30"
       >
+        <option value="none">Select</option>
         <option value="previous">
           {previousCompareLabel} · {previousCompareName}
         </option>

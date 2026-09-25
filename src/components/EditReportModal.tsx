@@ -1,9 +1,10 @@
 import { Download, FilePenLine, Share2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useReport } from '../context/ReportContext'
-import type { ReportStatus } from '../types'
+import type { ReportModuleId, ReportStatus } from '../types'
 import { ConfirmModal } from './ui/ConfirmModal'
 import { Field, Select, TextInput } from './ui/FilterBar'
+import { ModuleChecklist } from './ui/ModuleChecklist'
 import { PrimaryButton, SecondaryButton } from './ui/Buttons'
 
 const steps = ['Why Edit', 'Prepare report', 'Finish']
@@ -19,10 +20,21 @@ export function EditReportModal({
   onDownload: () => void
   onShare: () => void
 }) {
-  const { reportTitle, setReportTitle, reportStatus, setReportStatus, setViewMode } = useReport()
+  const {
+    reportTitle,
+    setReportTitle,
+    reportStatus,
+    setReportStatus,
+    setViewMode,
+    perspective,
+    accountType,
+    enabledModules,
+    setEnabledModules,
+  } = useReport()
   const [step, setStep] = useState(0)
   const [title, setTitle] = useState(reportTitle)
   const [status, setStatus] = useState<ReportStatus>(reportStatus)
+  const [modules, setModules] = useState<ReportModuleId[]>(enabledModules)
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
@@ -31,19 +43,22 @@ export function EditReportModal({
     setSaved(false)
     setTitle(reportTitle)
     setStatus(reportStatus)
-  }, [open, reportTitle, reportStatus])
+    setModules(enabledModules)
+  }, [open, reportTitle, reportStatus, enabledModules])
 
   const close = () => {
     setStep(0)
     setSaved(false)
     setTitle(reportTitle)
     setStatus(reportStatus)
+    setModules(enabledModules)
     onClose()
   }
 
   const save = () => {
     setReportTitle(title)
     setReportStatus(status)
+    setEnabledModules(modules)
     setSaved(true)
   }
 
@@ -52,7 +67,7 @@ export function EditReportModal({
       open={open}
       title="Edit report"
       onClose={close}
-      width="max-w-xl"
+      width="max-w-2xl"
       footer={
         step === 0 ? (
           <>
@@ -114,7 +129,7 @@ export function EditReportModal({
             <div className="rounded-xl border border-rg-blue bg-rg-blue-soft p-3">
               <FilePenLine size={16} className="text-rg-blue" />
               <p className="mt-2 font-semibold text-navy">Edit</p>
-              <p className="mt-1 text-navy-muted">Prepare narrative, visibility and approval status.</p>
+              <p className="mt-1 text-navy-muted">Prepare narrative, modules, visibility and approval status.</p>
             </div>
             <div className="rounded-xl border border-line p-3">
               <Download size={16} className="text-navy-muted" />
@@ -147,6 +162,12 @@ export function EditReportModal({
               ]}
             />
           </Field>
+          <ModuleChecklist
+            perspective={perspective}
+            accountType={accountType}
+            value={modules}
+            onChange={setModules}
+          />
           <div className="rounded-xl bg-canvas p-3 text-sm text-navy">
             <p className="font-semibold">Also edit on the page</p>
             <ul className="mt-2 list-disc space-y-1 pl-4 text-navy-muted">
@@ -175,16 +196,15 @@ export function EditReportModal({
             <>
               <p className="font-semibold">Changes saved</p>
               <p className="text-navy-muted">
-                Status is now <strong className="text-navy">{statusLabel(status)}</strong>. Next, download a file for
-                the meeting or share the public URL with the hotelier. They will not see Edit, Internal, or Client
-                preview.
+                Status is now <strong className="text-navy">{statusLabel(status)}</strong>. Client preview and hotelier
+                views will show {modules.length} modules. Next, download a file for the meeting or share the public URL.
               </p>
             </>
           ) : (
             <>
               <p>
-                Save title and status, then use <strong>Download</strong> or <strong>Share</strong> in the header. Those
-                buttons sit to the right of Edit because they come after you finish preparing the report.
+                Save title, status and shared modules, then use <strong>Download</strong> or <strong>Share</strong> in
+                the header.
               </p>
               <p className="text-navy-muted">
                 Suggested order: Edit → check Client preview → Download or Share.

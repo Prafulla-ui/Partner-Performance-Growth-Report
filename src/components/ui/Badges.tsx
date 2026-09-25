@@ -1,10 +1,19 @@
-import { Eye, Lock } from 'lucide-react'
+import { Eye, EyeOff, Lock } from 'lucide-react'
 
 export function InternalOnlyBadge() {
   return (
     <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-navy-muted">
       <Lock size={11} />
       Internal only
+    </span>
+  )
+}
+
+export function NotSharedBadge() {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-warning-soft px-2 py-0.5 text-[11px] font-medium text-warning">
+      <EyeOff size={11} />
+      Not shared with client
     </span>
   )
 }

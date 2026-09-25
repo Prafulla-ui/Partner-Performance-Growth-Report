@@ -20,9 +20,9 @@ export function DataTable<T extends object>({
   rowKey: (row: T) => string
 }) {
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-[var(--shadow-card)]">
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl bg-white">
       {title ? (
-        <div className="border-b border-line bg-[#F8FAFC] px-5 py-3">
+        <div className="px-5 py-3">
           <h3 className="text-sm font-semibold text-navy">{title}</h3>
         </div>
       ) : null}
@@ -33,7 +33,7 @@ export function DataTable<T extends object>({
               {columns.map((col, i) => (
                 <th
                   key={col.key}
-                  className={`sticky top-0 z-10 whitespace-nowrap border-b border-line bg-[#F3F6FB] px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-navy-muted ${
+                  className={`sticky top-0 z-10 whitespace-nowrap border-b border-[#eceef2] bg-white px-4 py-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-navy-muted ${
                     col.align === 'right' ? 'text-right' : 'text-left'
                   } ${i === 0 ? 'pl-5' : ''} ${i === columns.length - 1 ? 'pr-5' : ''}`}
                 >

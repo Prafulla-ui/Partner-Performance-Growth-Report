@@ -1,6 +1,6 @@
 import { ExternalLink } from 'lucide-react'
 import { useState } from 'react'
-import { ChannelMixChart, RevenueCommissionChart } from '../components/ChannelCharts'
+import { RevenueCommissionChart } from '../components/ChannelCharts'
 import { GhostButton } from '../components/ui/Buttons'
 import { ChartContainer } from '../components/ui/ChartContainer'
 import { ConfirmModal } from '../components/ui/ConfirmModal'
@@ -8,7 +8,7 @@ import { DataTable, type Column } from '../components/ui/DataTable'
 import { SectionHeader } from '../components/ui/SectionHeader'
 import { SideDrawer } from '../components/ui/SideDrawer'
 import { TrendIndicator } from '../components/ui/TrendIndicator'
-import { channelMix, channelRows, propertyProduction } from '../data/grandMeridian'
+import { channelRows, propertyProduction } from '../data/grandMeridian'
 import { formatCurrency, formatNumber } from '../lib/format'
 import type { ChannelRow } from '../types'
 
@@ -32,6 +32,7 @@ export function IndirectChannels() {
     <section>
       <SectionHeader
         id="indirect-channels"
+        moduleId="indirect"
         title="Indirect channel performance"
         description="OTA and wholesale production alongside commission. Use this to decide where mix, not just cost, should move."
         action={
@@ -63,10 +64,7 @@ export function IndirectChannels() {
         <GhostButton onClick={() => setPropertyOpen(true)}>Property drill-down</GhostButton>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <ChartContainer title="Channel revenue mix" subtitle="Direct, OTA, GDS and offline">
-          <ChannelMixChart data={channelMix} />
-        </ChartContainer>
+      <div className="mt-4">
         <ChartContainer title="Revenue versus commission" subtitle="Where production is expensive relative to yield">
           <RevenueCommissionChart rows={channelRows} />
         </ChartContainer>

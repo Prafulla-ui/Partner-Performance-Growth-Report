@@ -14,6 +14,7 @@ export function Recommendations() {
     <section>
       <SectionHeader
         id="recommendations"
+        moduleId="recommendations"
         title="Growth recommendations"
         description={
           isSupply
@@ -21,7 +22,7 @@ export function Recommendations() {
             : 'Joint growth actions that expand production quality and incremental demand — not cost-cutting on the partner.'
         }
       />
-      <article className="mb-4 rounded-2xl border border-ai/20 bg-gradient-to-r from-ai-soft via-white to-teal-soft p-6 shadow-[var(--shadow-card)]">
+      <article className="mb-4 rounded-2xl bg-ai-soft p-6">
         <p className="text-xs font-semibold uppercase tracking-wide text-ai">Combined estimated upside</p>
         <p className="mt-1 text-3xl font-semibold tabular text-navy">{formatCurrency(upside, true)} next quarter</p>
         <p className="mt-1 text-sm text-navy-muted">

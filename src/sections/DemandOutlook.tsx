@@ -5,6 +5,7 @@ import { GhostButton } from '../components/ui/Buttons'
 import { ConfirmModal } from '../components/ui/ConfirmModal'
 import { SectionHeader } from '../components/ui/SectionHeader'
 import { demandMarkets } from '../data/grandMeridian'
+import { chartColors } from '../lib/chartTheme'
 
 const levelStyle = {
   High: 'bg-positive-soft text-positive',
@@ -19,6 +20,7 @@ export function DemandOutlook() {
     <section>
       <SectionHeader
         id="demand-outlook"
+        moduleId="outlook"
         title="Market demand outlook"
         description="Forward-looking 90-day demand for the three primary destinations. Figures are a forecast, not actual results."
       />
@@ -35,7 +37,7 @@ export function DemandOutlook() {
             <div className="my-3 h-14">
               <ResponsiveContainer>
                 <LineChart data={m.trend.map((v, i) => ({ i, v }))}>
-                  <Line type="monotone" dataKey="v" stroke="#1B4F9C" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="v" stroke={chartColors.primary} strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>

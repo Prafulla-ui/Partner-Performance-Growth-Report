@@ -65,6 +65,7 @@ export function DirectPerformance() {
     <section>
       <SectionHeader
         id="direct-performance"
+        moduleId="direct"
         title={isSupply ? 'Direct channel performance' : 'Contribution performance'}
         description={
           isSupply
@@ -72,7 +73,7 @@ export function DirectPerformance() {
             : 'How the demand partnership is producing bookings, room nights and conversion quality — not commission cost.'
         }
       />
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-4 items-stretch gap-3">
         {kpis.map((metric) => (
           <KpiCard key={metric.id} metric={metric} />
         ))}
@@ -82,23 +83,21 @@ export function DirectPerformance() {
         <div className={isSupply ? 'col-span-3 h-full' : ''}>
           <ChartContainer
             title="Monthly trend"
-            subtitle="Q2 2026 versus selected comparisons"
+            subtitle="Q2 2026 · booking-engine production by month"
             action={<SegmentedControl value={chartMetric} onChange={setChartMetric} options={metricOptions} />}
           >
             <MonthlyTrendChart
               data={chartData}
               metric={chartMetric}
-              showPrevious={compareWith !== 'ly'}
-              showLy={compareWith !== 'previous'}
+              showPrevious={compareWith === 'previous' || compareWith === 'both'}
+              showLy={compareWith === 'ly' || compareWith === 'both'}
             />
           </ChartContainer>
         </div>
         {isSupply && (
           <div className="col-span-2 h-full">
-            <ChartContainer title="Conversion funnel" subtitle="Click a stage for drop-off detail">
-              <div className="flex h-full min-h-[360px] items-center justify-center">
-                <ConversionFunnel stages={funnelStages} onSelect={setStage} />
-              </div>
+            <ChartContainer title="Conversion funnel" subtitle="Where guests leave the booking path · click a stage">
+              <ConversionFunnel stages={funnelStages} onSelect={setStage} />
             </ChartContainer>
           </div>
         )}

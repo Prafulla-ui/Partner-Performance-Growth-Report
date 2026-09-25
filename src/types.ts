@@ -2,10 +2,21 @@ export type PartnerPerspective = 'supply' | 'demand'
 export type AccountType = 'direct' | 'full'
 export type ViewMode = 'internal' | 'customer'
 export type ViewPeriod = 'month' | 'quarter' | 'ytd' | 'custom'
-export type CompareWith = 'previous' | 'ly' | 'both'
+export type CompareWith = 'none' | 'previous' | 'ly' | 'both'
 export type Granularity = 'daily' | 'weekly' | 'monthly'
 export type ScopeLevel = 'chain' | 'brand' | 'property'
 export type UserKind = 'account_manager' | 'hotelier'
+export type ReportModuleId =
+  | 'scorecard'
+  | 'content-score'
+  | 'ai-visibility'
+  | 'direct'
+  | 'indirect'
+  | 'parity'
+  | 'marketing'
+  | 'outlook'
+  | 'recommendations'
+  | 'next-steps'
 export type OutputFormat = 'in_app' | 'pdf' | 'xlsx' | 'email'
 export type KpiStatus = 'on_track' | 'improving' | 'watch' | 'action_needed'
 export type ReportStatus = 'draft' | 'ready' | 'approved' | 'shared'
@@ -47,6 +58,47 @@ export interface KpiMetric {
     comparisons: ComparisonValue
     tooltip: string
   }
+}
+
+export interface ScopeKpis {
+  revenue: string
+  revenueRaw: number
+  revenueVsPrior: number
+  directRevenue: string
+  directShare: string
+  directVsPrior: number
+  roomNights: string
+  roomNightsRaw: number
+  roomNightsVsPrior: number
+  conversion: string
+  conversionVsPrior: number
+  parityWin: string
+  parityWinVsPrior: number
+}
+
+export interface HierarchyProperty {
+  id: string
+  name: string
+  brandId: string
+  city: string
+  kpis: ScopeKpis
+}
+
+export interface HierarchyBrand {
+  id: string
+  name: string
+  propertyCount: number
+  kpis: ScopeKpis
+  propertyIds: string[]
+}
+
+export interface ChainHierarchy {
+  id: string
+  name: string
+  propertyCount: number
+  kpis: ScopeKpis
+  brands: HierarchyBrand[]
+  properties: HierarchyProperty[]
 }
 
 export interface LibraryReport {

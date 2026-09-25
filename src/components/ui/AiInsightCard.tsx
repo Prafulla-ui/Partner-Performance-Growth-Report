@@ -13,7 +13,7 @@ export function AiInsightCard({
   estimate?: boolean
 }) {
   return (
-    <section className="rounded-2xl border border-violet-200/80 bg-gradient-to-br from-ai-soft via-white to-teal-soft/40 p-5 shadow-[var(--shadow-card)]">
+    <section className="rounded-2xl bg-ai-soft p-5">
       <div className="mb-2 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-ai">

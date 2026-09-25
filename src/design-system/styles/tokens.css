@@ -1,0 +1,129 @@
+/* Semantic design tokens — RateGain / UNIFI visual language
+   Primitives stay stable; semantic roles map for light (default) and dark readiness. */
+
+:root {
+  /* Primitives */
+  --ds-navy-950: #0f1f33;
+  --ds-navy-700: #4a5b70;
+  --ds-blue-700: #1b4f9c;
+  --ds-blue-600: #2563eb;
+  --ds-blue-100: #e8eef8;
+  --ds-slate-100: #f3f6fb;
+  --ds-slate-50: #f8fafc;
+  --ds-white: #ffffff;
+  --ds-canvas: #f6f7f9;
+  --ds-line: #eceef2;
+  --ds-positive: #0f7b4a;
+  --ds-positive-soft: #e6f6ee;
+  --ds-warning: #b45309;
+  --ds-warning-soft: #fef3c7;
+  --ds-danger: #b42318;
+  --ds-danger-soft: #fee4e2;
+  --ds-info: #0f766e;
+  --ds-info-soft: #ccfbf1;
+  --ds-ai: #6d28d9;
+  --ds-ai-soft: #f4f1fb;
+  --ds-grey-400: #94a3b8;
+  --ds-grey-300: #b7c4d6;
+
+  /* Semantic — light */
+  --ds-bg-primary: #f6f7f9;
+  --ds-bg-secondary: #eef0f3;
+  --ds-bg-elevated: var(--ds-white);
+  --ds-bg-inverse: var(--ds-navy-950);
+
+  --ds-surface-default: var(--ds-white);
+  --ds-surface-muted: #eef0f3;
+  --ds-surface-selected: var(--ds-blue-100);
+  --ds-surface-hover: var(--ds-slate-50);
+
+  --ds-text-primary: var(--ds-navy-950);
+  --ds-text-secondary: var(--ds-navy-700);
+  --ds-text-muted: var(--ds-navy-700);
+  --ds-text-inverse: var(--ds-white);
+  --ds-text-disabled: var(--ds-grey-400);
+
+  --ds-border-default: var(--ds-line);
+  --ds-border-subtle: #e8eef6;
+  --ds-border-strong: #b7c4d6;
+  --ds-border-focus: var(--ds-blue-600);
+
+  --ds-brand-primary: var(--ds-blue-700);
+  --ds-brand-primary-bright: var(--ds-blue-600);
+  --ds-brand-primary-soft: var(--ds-blue-100);
+  --ds-brand-secondary: var(--ds-navy-950);
+  --ds-brand-accent: var(--ds-info);
+
+  --ds-feedback-success: var(--ds-positive);
+  --ds-feedback-success-soft: var(--ds-positive-soft);
+  --ds-feedback-warning: var(--ds-warning);
+  --ds-feedback-warning-soft: var(--ds-warning-soft);
+  --ds-feedback-error: var(--ds-danger);
+  --ds-feedback-error-soft: var(--ds-danger-soft);
+  --ds-feedback-info: var(--ds-info);
+  --ds-feedback-info-soft: var(--ds-info-soft);
+
+  --ds-interactive-default: var(--ds-blue-700);
+  --ds-interactive-hover: var(--ds-blue-600);
+  --ds-interactive-active: #163f7d;
+  --ds-interactive-selected: var(--ds-blue-100);
+  --ds-interactive-disabled: var(--ds-grey-400);
+
+  --ds-font-sans: 'Plus Jakarta Sans', 'Segoe UI', Inter, system-ui, sans-serif;
+  --ds-shadow-sm: none;
+  --ds-shadow-md: none;
+  --ds-shadow-lg: 0 8px 24px rgb(15 31 51 / 0.06);
+  --ds-focus-ring: 0 0 0 3px rgb(37 99 235 / 0.35);
+
+  --ds-radius-sm: 0.375rem;
+  --ds-radius-md: 0.5rem;
+  --ds-radius-lg: 0.75rem;
+  --ds-radius-xl: 1rem;
+  --ds-radius-2xl: 1rem;
+  --ds-radius-full: 9999px;
+
+  --ds-space-1: 0.25rem;
+  --ds-space-2: 0.5rem;
+  --ds-space-3: 0.75rem;
+  --ds-space-4: 1rem;
+  --ds-space-5: 1.25rem;
+  --ds-space-6: 1.5rem;
+  --ds-space-8: 2rem;
+  --ds-space-12: 3rem;
+
+  --ds-z-dropdown: 40;
+  --ds-z-sticky: 40;
+  --ds-z-overlay: 50;
+  --ds-z-modal: 50;
+
+  --ds-duration-fast: 120ms;
+  --ds-duration-normal: 200ms;
+  --ds-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+[data-theme='dark'] {
+  --ds-bg-primary: #0b1524;
+  --ds-bg-secondary: #122033;
+  --ds-bg-elevated: #16263c;
+  --ds-bg-inverse: #eef2f7;
+
+  --ds-surface-default: #16263c;
+  --ds-surface-muted: #1c2e46;
+  --ds-surface-selected: #1b3a66;
+  --ds-surface-hover: #1c2e46;
+
+  --ds-text-primary: #eef2f7;
+  --ds-text-secondary: #a8b6c8;
+  --ds-text-muted: #8a9bb0;
+  --ds-text-inverse: #0f1f33;
+  --ds-text-disabled: #5a6b80;
+
+  --ds-border-default: #2a3d55;
+  --ds-border-subtle: #22344a;
+  --ds-border-strong: #3d5470;
+  --ds-border-focus: #60a5fa;
+
+  --ds-brand-primary: #3b82f6;
+  --ds-brand-primary-bright: #60a5fa;
+  --ds-brand-primary-soft: #1b3a66;
+}

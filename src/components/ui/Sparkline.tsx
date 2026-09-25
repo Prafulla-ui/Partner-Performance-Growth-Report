@@ -1,6 +1,7 @@
 import { Line, LineChart, ResponsiveContainer } from 'recharts'
+import { chartColors } from '../../lib/chartTheme'
 
-export function Sparkline({ data, color = '#1B4F9C' }: { data: number[]; color?: string }) {
+export function Sparkline({ data, color = chartColors.primary }: { data: number[]; color?: string }) {
   const series = data.map((v, i) => ({ i, v }))
   return (
     <div className="h-8 w-20">

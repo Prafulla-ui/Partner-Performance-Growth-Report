@@ -29,6 +29,7 @@ export function DemandCoverage() {
     <section>
       <SectionHeader
         id="indirect-channels"
+        moduleId="indirect"
         title="Market and property coverage"
         description="Live production across the 12-property chain. Coverage is complete; incremental demand is strongest in Dubai and Singapore."
       />

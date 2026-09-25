@@ -13,6 +13,8 @@ export interface AuthUser {
   scopeLabel?: string
   allowedReportIds?: string[]
   homeReportId?: string
+  brandId?: string
+  propertyId?: string
 }
 
 interface AuthState {
@@ -45,14 +47,15 @@ export const DEMO_USERS: (AuthUser & { password: string })[] = [
   },
   {
     name: 'James Cole',
-    email: 'james.cole@azuresands.com',
+    email: 'james.cole@grandmeridian.com',
     role: 'Hotelier · Brand',
     kind: 'hotelier',
     hotelierLevel: 'brand',
-    partner: 'Azure Sands Collection',
-    scopeLabel: 'Brand — 6 properties',
-    allowedReportIds: ['azure-sands-q2-2026'],
-    homeReportId: 'azure-sands-q2-2026',
+    partner: 'Grand Meridian Hotels & Resorts',
+    scopeLabel: 'Brand — Grand Meridian Select',
+    allowedReportIds: ['grand-meridian-q2-2026'],
+    homeReportId: 'grand-meridian-q2-2026',
+    brandId: 'gm-select',
     password: 'Hotelier2026',
   },
   {
@@ -63,8 +66,10 @@ export const DEMO_USERS: (AuthUser & { password: string })[] = [
     hotelierLevel: 'property',
     partner: 'Grand Meridian Hotels & Resorts',
     scopeLabel: 'Property — GM Dubai Marina',
-    allowedReportIds: ['grand-meridian-dubai-q2-2026'],
-    homeReportId: 'grand-meridian-dubai-q2-2026',
+    allowedReportIds: ['grand-meridian-q2-2026'],
+    homeReportId: 'grand-meridian-q2-2026',
+    brandId: 'gm-luxury',
+    propertyId: 'gm-dubai',
     password: 'Hotelier2026',
   },
 ]

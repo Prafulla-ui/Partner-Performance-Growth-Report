@@ -1,27 +1,7 @@
-import type { FunnelStage } from '../types'
+import { AlertTriangle, ChevronRight } from 'lucide-react'
+import { chartColors, chartGradients } from '../lib/chartTheme'
 import { formatNumber } from '../lib/format'
-
-const VIEW_W = 400
-const VIEW_H = 400
-const TOP_W = 360
-const BOT_W = 88
-const BAND_H = VIEW_H / 6
-
-const fills = ['#122C5C', '#1B4F9C', '#215DB8', '#3B7BD4', '#B45309', '#0F766E']
-
-function widthAt(y: number) {
-  return TOP_W + ((BOT_W - TOP_W) * y) / VIEW_H
-}
-
-function bandPath(i: number) {
-  const y1 = i * BAND_H
-  const y2 = (i + 1) * BAND_H
-  const w1 = widthAt(y1)
-  const w2 = widthAt(y2)
-  const x1 = (VIEW_W - w1) / 2
-  const x2 = (VIEW_W - w2) / 2
-  return `M ${x1} ${y1} L ${x1 + w1} ${y1} L ${x2 + w2} ${y2} L ${x2} ${y2} Z`
-}
+import type { FunnelStage } from '../types'
 
 export function ConversionFunnel({
   stages,
@@ -30,38 +10,83 @@ export function ConversionFunnel({
   stages: FunnelStage[]
   onSelect: (stage: FunnelStage) => void
 }) {
+  const max = stages[0]?.value ?? 1
+  const primaryGradient = `linear-gradient(90deg, ${chartGradients.primaryBar.from}, ${chartGradients.primaryBar.to})`
+  const accentGradient = `linear-gradient(90deg, ${chartGradients.accentBar.from}, ${chartGradients.accentBar.to})`
+
   return (
-    <svg viewBox={`0 0 ${VIEW_W} ${VIEW_H}`} className="mx-auto h-full max-h-[400px] w-full max-w-[380px]" role="img">
-      <title>Website conversion funnel</title>
-      <defs>
-        <filter id="funnel-shadow" x="-10%" y="-4%" width="120%" height="112%">
-          <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#0F1F33" floodOpacity="0.16" />
-        </filter>
-      </defs>
-      <g filter="url(#funnel-shadow)">
-        {stages.map((stage, i) => (
-          <path
-            key={stage.id}
-            d={bandPath(i)}
-            fill={fills[i]}
-            className="cursor-pointer"
-            onClick={() => onSelect(stage)}
-          />
-        ))}
-      </g>
-      {stages.map((stage, i) => {
-        const cy = i * BAND_H + BAND_H / 2 + 3
+    <div className="flex h-full min-h-[360px] flex-col justify-center gap-3.5 py-1">
+      {stages.map((stage) => {
+        const fillPct = Math.max(4, (stage.value / max) * 100)
+        const isLeak = Boolean(stage.highlight)
+
         return (
-          <g key={`${stage.id}-label`} className="pointer-events-none">
-            <text x={VIEW_W / 2} y={cy - 8} textAnchor="middle" fill="#fff" fontSize="11" fontWeight="600">
-              {stage.label}
-            </text>
-            <text x={VIEW_W / 2} y={cy + 9} textAnchor="middle" fill="#fff" fontSize="14" fontWeight="700">
-              {formatNumber(stage.value)}
-            </text>
-          </g>
+          <button
+            key={stage.id}
+            type="button"
+            onClick={() => onSelect(stage)}
+            aria-label={`View details for ${stage.label}`}
+            className={`group w-full rounded-xl px-2.5 py-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rg-blue/35 focus-visible:ring-offset-2 ${
+              isLeak
+                ? 'bg-warning-soft/60 ring-1 ring-warning/25 hover:bg-warning-soft hover:ring-warning/40'
+                : 'hover:bg-[#f6f7f9]'
+            }`}
+          >
+            <div className="mb-1.5 flex items-center justify-between gap-3">
+              <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+                <span
+                  className={`text-[11px] font-semibold ${
+                    isLeak ? 'text-warning underline decoration-warning/40 underline-offset-2' : 'text-navy'
+                  }`}
+                >
+                  {stage.label}
+                </span>
+                {isLeak && (
+                  <span className="inline-flex items-center gap-0.5 rounded-full bg-white px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-warning">
+                    <AlertTriangle size={9} />
+                    Largest leak
+                  </span>
+                )}
+              </div>
+              <div className="flex shrink-0 items-center gap-2 text-[11px]">
+                <span className="font-semibold tabular text-navy">{formatNumber(stage.value)}</span>
+                {stage.dropOff != null ? (
+                  <span className="tabular text-danger">−{stage.dropOff.toFixed(1)}%</span>
+                ) : (
+                  <span className="tabular text-navy-muted">100%</span>
+                )}
+                <span
+                  className={`inline-flex items-center gap-0.5 font-semibold ${
+                    isLeak
+                      ? 'text-warning'
+                      : 'text-rg-blue opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100'
+                  }`}
+                >
+                  View
+                  <ChevronRight size={12} className="transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </div>
+            </div>
+
+            <div
+              className={`h-2.5 overflow-hidden rounded-full ${isLeak ? 'ring-1 ring-warning/30' : ''}`}
+              style={{ background: chartColors.track }}
+            >
+              <div
+                className="h-full rounded-full transition-[width] duration-300 group-hover:brightness-95"
+                style={{
+                  width: `${fillPct}%`,
+                  background: isLeak ? accentGradient : primaryGradient,
+                }}
+              />
+            </div>
+          </button>
         )
       })}
-    </svg>
+
+      <p className="mt-1 text-center text-[11px] text-navy-muted">
+        Bar length = share of site sessions · click a stage for detail
+      </p>
+    </div>
   )
 }

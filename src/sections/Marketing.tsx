@@ -28,11 +28,12 @@ export function Marketing() {
     <section>
       <SectionHeader
         id="marketing"
+        moduleId="marketing"
         title="Digital marketing and SEO"
         description="Organic quality is compounding. Paid media is still efficient, led by Brand-Protect-SEM."
         action={isInternal ? <InternalOnlyBadge /> : undefined}
       />
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-4 items-stretch gap-3">
         {kpis.map((metric) => (
           <KpiCard key={metric.id} metric={metric} />
         ))}

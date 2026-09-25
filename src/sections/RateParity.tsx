@@ -9,6 +9,7 @@ import { DataTable, type Column } from '../components/ui/DataTable'
 import { SectionHeader } from '../components/ui/SectionHeader'
 import { useReport } from '../context/ReportContext'
 import { parityLosses, parityScore } from '../data/grandMeridian'
+import { chartColors } from '../lib/chartTheme'
 import { formatNumber } from '../lib/format'
 import type { ParityOtaLoss } from '../types'
 
@@ -17,9 +18,9 @@ export function RateParity() {
   const [evidence, setEvidence] = useState(false)
   const [dash, setDash] = useState(false)
   const mix = [
-    { name: 'Win', value: parityScore.win, color: '#0F7B4A' },
-    { name: 'Meet', value: parityScore.meet, color: '#B45309' },
-    { name: 'Loss', value: parityScore.loss, color: '#B42318' },
+    { name: 'Win', value: parityScore.win, color: chartColors.positive },
+    { name: 'Meet', value: parityScore.meet, color: chartColors.warning },
+    { name: 'Loss', value: parityScore.loss, color: chartColors.danger },
   ]
 
   const columns: Column<ParityOtaLoss>[] = [
@@ -33,10 +34,11 @@ export function RateParity() {
     <section>
       <SectionHeader
         id="rate-parity"
+        moduleId="parity"
         title="Rate parity and competitiveness"
         description="Win rate is 14 points below the 85% target. Losses concentrate on Agoda and Booking.com."
       />
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-5 gap-3">
         <Score label="Parity checks" value={formatNumber(parityScore.checks)} />
         <Score label="Win rate" value={`${parityScore.win}%`} note={`Target ${parityScore.target}%`} />
         <Score label="Loss / meet rate" value={`${parityScore.loss}% / ${parityScore.meet}%`} />

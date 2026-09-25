@@ -13,6 +13,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { chartColors, chartGradients } from '../lib/chartTheme'
 import { formatCurrency, formatNumber } from '../lib/format'
 import type { ChannelRow } from '../types'
 
@@ -66,7 +67,7 @@ export function ChannelMixChart({
               innerRadius={62}
               outerRadius={92}
               paddingAngle={3}
-              stroke="#fff"
+              stroke={chartColors.white}
               strokeWidth={3}
             >
               {data.map((c) => (
@@ -144,26 +145,26 @@ export function RevenueCommissionChart({ rows }: { rows: ChannelRow[] }) {
         <BarChart data={data} barGap={4} barCategoryGap="22%" margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="revBar" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#3B82F6" />
-              <stop offset="100%" stopColor="#1B4F9C" />
+              <stop offset="0%" stopColor={chartGradients.primaryBar.from} />
+              <stop offset="100%" stopColor={chartGradients.primaryBar.to} />
             </linearGradient>
             <linearGradient id="commBar" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#FBBF24" />
-              <stop offset="100%" stopColor="#D97706" />
+              <stop offset="0%" stopColor={chartGradients.accentBar.from} />
+              <stop offset="100%" stopColor={chartGradients.accentBar.to} />
             </linearGradient>
           </defs>
-          <CartesianGrid stroke="#E8EEF6" vertical={false} />
+          <CartesianGrid stroke={chartColors.grid} vertical={false} />
           <XAxis
             dataKey="label"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: '#4A5B70', fontSize: 11, fontWeight: 600 }}
+            tick={{ fill: chartColors.axis, fontSize: 11, fontWeight: 600 }}
           />
           <YAxis
             axisLine={false}
             tickLine={false}
             width={52}
-            tick={{ fill: '#4A5B70', fontSize: 11 }}
+            tick={{ fill: chartColors.axis, fontSize: 11 }}
             tickFormatter={(v: number) => formatCurrency(v, true)}
           />
           <Tooltip content={<BarTooltip />} cursor={{ fill: 'rgb(27 79 156 / 0.05)' }} />
@@ -171,7 +172,7 @@ export function RevenueCommissionChart({ rows }: { rows: ChannelRow[] }) {
             verticalAlign="top"
             align="right"
             iconType="circle"
-            wrapperStyle={{ fontSize: 12, color: '#4A5B70', paddingBottom: 6 }}
+            wrapperStyle={{ fontSize: 12, color: chartColors.axis, paddingBottom: 6 }}
           />
           <Bar dataKey="revenue" name="Revenue" fill="url(#revBar)" radius={[6, 6, 0, 0]} maxBarSize={22} />
           <Bar dataKey="commission" name="Commission" fill="url(#commBar)" radius={[6, 6, 0, 0]} maxBarSize={22} />
@@ -194,21 +195,26 @@ export function PaidSpendRevenueChart({
         <BarChart data={data} barGap={4} barCategoryGap="28%" margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="paidRevBar" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#3B82F6" />
-              <stop offset="100%" stopColor="#1B4F9C" />
+              <stop offset="0%" stopColor={chartGradients.primaryBar.from} />
+              <stop offset="100%" stopColor={chartGradients.primaryBar.to} />
             </linearGradient>
             <linearGradient id="paidSpendBar" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#94A3B8" />
-              <stop offset="100%" stopColor="#64748B" />
+              <stop offset="0%" stopColor={chartGradients.mutedBar.from} />
+              <stop offset="100%" stopColor={chartGradients.mutedBar.to} />
             </linearGradient>
           </defs>
-          <CartesianGrid stroke="#E8EEF6" vertical={false} />
-          <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#4A5B70', fontSize: 12, fontWeight: 600 }} />
+          <CartesianGrid stroke={chartColors.grid} vertical={false} />
+          <XAxis
+            dataKey="month"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: chartColors.axis, fontSize: 12, fontWeight: 600 }}
+          />
           <YAxis
             axisLine={false}
             tickLine={false}
             width={52}
-            tick={{ fill: '#4A5B70', fontSize: 11 }}
+            tick={{ fill: chartColors.axis, fontSize: 11 }}
             tickFormatter={(v: number) => formatCurrency(v, true)}
           />
           <Tooltip content={<BarTooltip />} cursor={{ fill: 'rgb(27 79 156 / 0.05)' }} />
@@ -216,7 +222,7 @@ export function PaidSpendRevenueChart({
             verticalAlign="top"
             align="right"
             iconType="circle"
-            wrapperStyle={{ fontSize: 12, color: '#4A5B70', paddingBottom: 6 }}
+            wrapperStyle={{ fontSize: 12, color: chartColors.axis, paddingBottom: 6 }}
           />
           {showSpend && (
             <Bar dataKey="spend" name="Spend" fill="url(#paidSpendBar)" radius={[6, 6, 0, 0]} maxBarSize={28} />
@@ -253,28 +259,33 @@ export function OrganicSessionsChart({ data }: { data: { month: string; sessions
         <ComposedChart data={data} margin={{ top: 8, right: 8, left: 4, bottom: 0 }}>
           <defs>
             <linearGradient id="orgFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#2563EB" stopOpacity={0.28} />
-              <stop offset="100%" stopColor="#2563EB" stopOpacity={0.02} />
+              <stop offset="0%" stopColor={chartGradients.primaryArea} stopOpacity={0.28} />
+              <stop offset="100%" stopColor={chartGradients.primaryArea} stopOpacity={0.02} />
             </linearGradient>
           </defs>
-          <CartesianGrid stroke="#E8EEF6" vertical={false} />
-          <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#4A5B70', fontSize: 12, fontWeight: 600 }} />
+          <CartesianGrid stroke={chartColors.grid} vertical={false} />
+          <XAxis
+            dataKey="month"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: chartColors.axis, fontSize: 12, fontWeight: 600 }}
+          />
           <YAxis
             axisLine={false}
             tickLine={false}
             width={48}
-            tick={{ fill: '#4A5B70', fontSize: 11 }}
+            tick={{ fill: chartColors.axis, fontSize: 11 }}
             tickFormatter={(v: number) => formatNumber(v)}
           />
-          <Tooltip content={<SessionTooltip />} cursor={{ stroke: '#1B4F9C', strokeDasharray: '4 4' }} />
+          <Tooltip content={<SessionTooltip />} cursor={{ stroke: chartColors.primary, strokeDasharray: '4 4' }} />
           <Area
             type="monotone"
             dataKey="sessions"
             name="Organic sessions"
-            stroke="#1B4F9C"
+            stroke={chartColors.primary}
             strokeWidth={2.5}
             fill="url(#orgFill)"
-            dot={{ r: 3.5, fill: '#1B4F9C', stroke: '#fff', strokeWidth: 2 }}
+            dot={{ r: 3.5, fill: chartColors.primary, stroke: chartColors.white, strokeWidth: 2 }}
           />
         </ComposedChart>
       </ResponsiveContainer>

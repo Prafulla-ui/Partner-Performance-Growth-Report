@@ -1,27 +1,28 @@
 @import "tailwindcss";
+@import "./design-system/styles/tokens.css";
 
 @theme {
-  --color-navy: #0f1f33;
-  --color-navy-muted: #4a5b70;
-  --color-canvas: #eef2f7;
-  --color-card: #ffffff;
-  --color-rg-blue: #1b4f9c;
-  --color-rg-blue-bright: #2563eb;
-  --color-rg-blue-soft: #e8eef8;
-  --color-positive: #0f7b4a;
-  --color-positive-soft: #e6f6ee;
-  --color-warning: #b45309;
-  --color-warning-soft: #fef3c7;
-  --color-danger: #b42318;
-  --color-danger-soft: #fee4e2;
-  --color-ai: #6d28d9;
-  --color-ai-soft: #f3e8ff;
-  --color-teal: #0f766e;
-  --color-teal-soft: #ccfbf1;
-  --color-line: #dbe3ee;
-  --font-sans: "Plus Jakarta Sans", "Segoe UI", Inter, system-ui, sans-serif;
-  --shadow-card: 0 1px 2px rgb(15 31 51 / 0.04), 0 8px 24px rgb(15 31 51 / 0.06);
-  --shadow-card-hover: 0 2px 4px rgb(15 31 51 / 0.06), 0 12px 32px rgb(15 31 51 / 0.1);
+  --color-navy: var(--ds-navy-950);
+  --color-navy-muted: var(--ds-navy-700);
+  --color-canvas: var(--ds-canvas);
+  --color-card: var(--ds-white);
+  --color-rg-blue: var(--ds-blue-700);
+  --color-rg-blue-bright: var(--ds-blue-600);
+  --color-rg-blue-soft: var(--ds-blue-100);
+  --color-positive: var(--ds-positive);
+  --color-positive-soft: var(--ds-positive-soft);
+  --color-warning: var(--ds-warning);
+  --color-warning-soft: var(--ds-warning-soft);
+  --color-danger: var(--ds-danger);
+  --color-danger-soft: var(--ds-danger-soft);
+  --color-ai: var(--ds-ai);
+  --color-ai-soft: var(--ds-ai-soft);
+  --color-teal: var(--ds-info);
+  --color-teal-soft: var(--ds-info-soft);
+  --color-line: var(--ds-line);
+  --font-sans: var(--ds-font-sans);
+  --shadow-card: var(--ds-shadow-md);
+  --shadow-card-hover: var(--ds-shadow-lg);
 }
 
 html {
@@ -31,12 +32,9 @@ html {
 body {
   margin: 0;
   min-width: 1280px;
-  background:
-    radial-gradient(1200px 420px at 8% -10%, rgb(27 79 156 / 0.08), transparent 55%),
-    radial-gradient(900px 380px at 100% 0%, rgb(15 118 110 / 0.06), transparent 50%),
-    var(--color-canvas);
-  color: var(--color-navy);
-  font-family: var(--font-sans);
+  background: var(--ds-bg-primary);
+  color: var(--ds-text-primary);
+  font-family: var(--ds-font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -48,11 +46,20 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234a5b70' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 12px;
+  padding-right: 2rem;
+}
+
 .surface-card {
-  border: 1px solid var(--color-line);
-  background: rgb(255 255 255 / 0.92);
-  box-shadow: var(--shadow-card);
-  backdrop-filter: blur(8px);
+  border: none;
+  background: var(--ds-surface-default);
+  box-shadow: none;
 }
 
 ::-webkit-scrollbar {
@@ -61,6 +68,26 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #b7c4d6;
+  background: var(--ds-grey-300);
   border-radius: 8px;
+}
+
+/* Horizontal strip: hide scrollbar until hover / focus-within */
+.scroll-x-hover {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.scroll-x-hover::-webkit-scrollbar {
+  height: 0;
+}
+
+.scroll-x-hover:hover,
+.scroll-x-hover:focus-within {
+  scrollbar-width: thin;
+}
+
+.scroll-x-hover:hover::-webkit-scrollbar,
+.scroll-x-hover:focus-within::-webkit-scrollbar {
+  height: 8px;
 }

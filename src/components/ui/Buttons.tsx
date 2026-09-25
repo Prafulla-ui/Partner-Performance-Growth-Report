@@ -4,7 +4,7 @@ export function PrimaryButton({ children, className = '', ...props }: ButtonHTML
   return (
     <button
       type="button"
-      className={`inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-gradient-to-b from-rg-blue-bright to-rg-blue px-3.5 text-sm font-semibold text-white shadow-sm hover:brightness-110 disabled:opacity-50 ${className}`}
+      className={`inline-flex h-9 items-center justify-center gap-2 rounded-full bg-navy px-4 text-sm font-semibold text-white hover:bg-[#16283f] disabled:opacity-50 ${className}`}
       {...props}
     >
       {children}
@@ -16,7 +16,7 @@ export function SecondaryButton({ children, className = '', ...props }: ButtonHT
   return (
     <button
       type="button"
-      className={`inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-line bg-white px-3.5 text-sm font-semibold text-navy shadow-sm hover:bg-slate-50 disabled:opacity-50 ${className}`}
+      className={`inline-flex h-9 items-center justify-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-navy hover:bg-[#eceef2] disabled:opacity-50 ${className}`}
       {...props}
     >
       {children}

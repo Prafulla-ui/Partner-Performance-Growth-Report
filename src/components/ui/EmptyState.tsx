@@ -57,7 +57,7 @@ export function EmptyState({
       className={`rounded-xl border border-dashed border-line bg-white text-navy-muted ${compact ? 'px-3 py-3' : 'px-4 py-8'}`}
     >
       <div className="flex items-start gap-3">
-        <item.Icon size={18} className="mt-0.5 text-rg-blue" />
+        <item.Icon size={18} className="mt-0.5 text-slate-400" />
         <div>
           <p className="text-sm font-semibold text-navy">{item.title}</p>
           <p className={`mt-1 text-sm ${compact ? 'max-w-xl' : 'max-w-2xl'}`}>{item.body}</p>

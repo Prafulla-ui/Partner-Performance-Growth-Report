@@ -12,11 +12,11 @@ export function ChartContainer({
   children: ReactNode
 }) {
   return (
-    <section className="flex h-full flex-col surface-card rounded-2xl p-5">
-      <div className="mb-3 flex shrink-0 items-start justify-between gap-3">
+    <section className="flex h-full flex-col rounded-2xl border border-[#eceef2] bg-white p-5">
+      <div className="mb-4 flex shrink-0 items-start justify-between gap-3">
         <div>
-          <h3 className="text-[15px] font-semibold tracking-tight text-navy">{title}</h3>
-          {subtitle && <p className="mt-0.5 text-xs text-navy-muted">{subtitle}</p>}
+          <h3 className="text-base font-semibold tracking-tight text-navy">{title}</h3>
+          {subtitle && <p className="mt-1 text-xs leading-5 text-navy-muted">{subtitle}</p>}
         </div>
         {action}
       </div>

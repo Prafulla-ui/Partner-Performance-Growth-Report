@@ -16,7 +16,7 @@ export function RecommendationCard({ rec }: { rec: Recommendation }) {
   return (
     <article className="surface-card rounded-2xl p-5">
       <div className="flex items-start gap-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-rg-blue to-rg-blue-bright text-sm font-semibold text-white shadow-sm">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-sm font-semibold text-slate-400">
           {rec.rank}
         </div>
         <div className="min-w-0 flex-1">
@@ -51,7 +51,7 @@ export function RecommendationCard({ rec }: { rec: Recommendation }) {
                 <select
                   value={rec.owner}
                   onChange={(e) => updateRecommendation(rec.id, { owner: e.target.value })}
-                  className="mt-0.5 w-full rounded-md border border-line bg-white px-1.5 py-1 text-xs text-navy"
+                  className="mt-0.5 w-full rounded-md border border-line bg-white py-1 pl-1.5 pr-8 text-xs text-navy"
                 >
                   {[rec.owner, ...owners.filter((o) => o !== rec.owner)].map((o) => (
                     <option key={o}>{o}</option>
@@ -67,7 +67,7 @@ export function RecommendationCard({ rec }: { rec: Recommendation }) {
                 <select
                   value={rec.priority}
                   onChange={(e) => updateRecommendation(rec.id, { priority: e.target.value as RecPriority })}
-                  className="mt-0.5 w-full rounded-md border border-line bg-white px-1.5 py-1 text-xs text-navy"
+                  className="mt-0.5 w-full rounded-md border border-line bg-white py-1 pl-1.5 pr-8 text-xs text-navy"
                 >
                   <option value="high">High</option>
                   <option value="medium">Medium</option>

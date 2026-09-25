@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { RequireAuth } from './components/RequireAuth'
 import { AuthProvider } from './context/AuthContext'
 import { ReportProvider } from './context/ReportContext'
+import { DesignSystemShowcase } from './pages/DesignSystemShowcase'
 import { Login } from './pages/Login'
 import { ReportDetail } from './pages/ReportDetail'
 import { ReportLibrary } from './pages/ReportLibrary'
@@ -13,6 +14,9 @@ export default function App() {
         <ReportProvider>
           <Routes>
             <Route path="/login" element={<Login />} />
+            {import.meta.env.DEV && (
+              <Route path="/design-system" element={<DesignSystemShowcase />} />
+            )}
             <Route
               path="/"
               element={

@@ -1,6 +1,7 @@
-import { Download, LogOut, MoreHorizontal, Pencil, Plus, Search } from 'lucide-react'
+import { Download, MoreHorizontal, Pencil, Plus, Search } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AppShell } from '../components/AppShell'
 import { useAuth } from '../context/AuthContext'
 import { GenerateReportDrawer } from '../components/GenerateReportDrawer'
 import { DemoDataBadge } from '../components/ui/Badges'
@@ -13,7 +14,7 @@ import type { LibraryReport } from '../types'
 
 export function ReportLibrary() {
   const navigate = useNavigate()
-  const { user, logout, isHotelier, isAccountManager } = useAuth()
+  const { user, isHotelier, isAccountManager } = useAuth()
   const [query, setQuery] = useState('')
   const [perspective, setPerspective] = useState('all')
   const [accountType, setAccountType] = useState('all')
@@ -106,45 +107,26 @@ export function ReportLibrary() {
   ]
 
   return (
-    <div className="min-h-screen">
-      <header className="border-b border-line bg-white/90 backdrop-blur">
-        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-8 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 items-center rounded-md bg-gradient-to-br from-rg-blue-bright to-rg-blue px-2.5 text-xs font-bold tracking-wide text-white shadow-sm">
-              UNIFI
-            </div>
-            <div>
-              <h1 className="text-lg font-semibold text-navy">
-                {isHotelier ? 'Your performance reports' : 'Partner Performance & Growth Reports'}
-              </h1>
-              {isHotelier && user?.scopeLabel && (
-                <p className="text-xs text-navy-muted">
-                  {user.partner} · {user.scopeLabel}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="text-right">
-              <p className="text-sm font-semibold text-navy">{user?.name}</p>
-              <p className="text-xs text-navy-muted">{user?.role}</p>
-            </div>
-            <DemoDataBadge />
-            <SecondaryButton
-              onClick={() => {
-                logout()
-                navigate('/login', { replace: true })
-              }}
-            >
-              <LogOut size={14} />
-              Sign out
-            </SecondaryButton>
-          </div>
-        </div>
-      </header>
-
-      <main className="mx-auto max-w-[1440px] px-8 py-6">
-        <div className="mb-5 flex items-end justify-between gap-4">
+    <AppShell
+      hideNav
+      contextLabel={isHotelier && user?.partner ? user.partner : 'Account team workspace'}
+      title={isHotelier ? 'Your reports' : 'Reports'}
+      description={
+        isHotelier
+          ? `${user?.scopeLabel ?? 'Shared partner briefs'} ready for review.`
+          : 'Prepare, review and share partner performance briefs.'
+      }
+      meta={<DemoDataBadge />}
+      actions={
+        isAccountManager ? (
+          <PrimaryButton onClick={() => setOpen(true)}>
+            <Plus size={16} />
+            Generate report
+          </PrimaryButton>
+        ) : undefined
+      }
+    >
+        <div className="mb-6">
           <FilterBar>
             <Field label="Search">
               <div className="relative w-72">
@@ -201,24 +183,15 @@ export function ReportLibrary() {
               />
             </Field>
           </FilterBar>
-          {isAccountManager && (
-            <PrimaryButton onClick={() => setOpen(true)}>
-              <Plus size={16} />
-              Generate Report
-            </PrimaryButton>
-          )}
         </div>
 
-        <div className="relative">
-          {rows.length === 0 ? (
-            <p className="px-4 py-10 text-center text-sm text-navy-muted">No reports match the current filters.</p>
-          ) : (
-            <DataTable title="Reports" columns={columns} rows={rows} rowKey={(r) => r.id} />
-          )}
-        </div>
-      </main>
+        {rows.length === 0 ? (
+          <p className="px-4 py-10 text-center text-sm text-navy-muted">No reports match the current filters.</p>
+        ) : (
+          <DataTable title="Reports" columns={columns} rows={rows} rowKey={(r) => r.id} />
+        )}
 
       <GenerateReportDrawer open={open} onClose={() => setOpen(false)} />
-    </div>
+    </AppShell>
   )
 }
